@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +18,8 @@
     "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
 }
