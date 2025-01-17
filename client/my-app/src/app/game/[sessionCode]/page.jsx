@@ -1,22 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+'use client';
+import React from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { Container, Typography, Box, Button, List, ListItem, ListItemText, Paper } from '@mui/material';
-import { socket } from '../services/socket';
+import { socket } from '../../../services/socket';
 
-function GameRoom() {
-    const { sessionCode } = useParams();
-    const navigate = useNavigate();
+export default function GameRoom() {
+    const router = useRouter();
+    const params = useParams();
+    const sessionCode = params.sessionCode;
     const [players, setPlayers] = useState([{id: '', name: ''}]);
     const [gameStatus, setGameStatus] = useState('waiting');
     const [isHost, setIsHost] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => {
+        if (!sessionCode) return;
+
+        socket.emit('joinRoom', { sessionCode });
+
         socket.on('gameCreated', ({ isHost }) => {
             setIsHost(isHost);
+            console.log('Host status:', isHost);
         });
 
         socket.on('playersList', ({ players }) => {
+            console.log('Players updated:', players);
             setPlayers(players);
         });
 
@@ -32,18 +41,19 @@ function GameRoom() {
         socket.on('gameEnded', ({ reason }) => {
             if (reason === 'Host disconnected') {
                 setError('L\'hôte s\'est déconnecté');
-                setTimeout(() => navigate('/'), 2000);
+                setTimeout(() => router.push('/'), 2000);
             }
         });
 
         return () => {
+            socket.off('joinRoom');
             socket.off('gameCreated');
             socket.off('playersList');
             socket.off('gameStarted');
             socket.off('error');
             socket.off('gameEnded');
         };
-    }, [navigate]);
+    }, [sessionCode, router]);
 
     const startGame = () => {
         if (players.length < 2) {
@@ -52,6 +62,10 @@ function GameRoom() {
         }
         socket.emit('startGame', { sessionCode });
     };
+
+    if (!sessionCode) {
+        return <div>Chargement...</div>;
+    }
 
     return (
         <Container maxWidth="md">
@@ -112,5 +126,3 @@ function GameRoom() {
         </Container>
     );
 }
-
-export default GameRoom;

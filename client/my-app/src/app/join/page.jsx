@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Container, TextField, Typography, Box } from '@mui/material';
-import { socket } from '../services/socket';
+'use client';
 
-function JoinGame() {
-    const navigate = useNavigate();
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button, Container, TextField, Typography, Box } from '@mui/material';
+import { socket } from '../../services/socket';
+
+export default function JoinGame() {
+    const router = useRouter();
     const [sessionCode, setSessionCode] = useState('');
     const [playerName, setPlayerName] = useState('');
 
@@ -14,11 +16,7 @@ function JoinGame() {
         socket.emit('joinGame', { sessionCode, playerName });
         
         socket.on('gameJoined', ({ sessionCode }) => {
-            navigate(`/game/${sessionCode}`);
-        });
-
-        socket.on('error', ({ message }) => {
-            alert(message);
+            router.push(`/game/${sessionCode}`);
         });
     };
 
@@ -51,12 +49,10 @@ function JoinGame() {
                     Rejoindre
                 </Button>
 
-                <Button variant="outlined" onClick={() => navigate('/')}>
+                <Button variant="outlined" onClick={() => router.push('/')}>
                     Retour
                 </Button>
             </Box>
         </Container>
     );
 }
-
-export default JoinGame;
