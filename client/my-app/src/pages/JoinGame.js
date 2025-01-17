@@ -18,7 +18,7 @@ function JoinGame() {
         });
 
         socket.on('error', ({ message }) => {
-            alert(message); // À améliorer avec un composant de notification
+            alert(message);
         });
     };
 
