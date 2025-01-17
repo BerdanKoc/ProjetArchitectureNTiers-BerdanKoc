@@ -1,10 +1,10 @@
 # Trivia Game
 
-Jeu de questions-réponses en temps réel développé avec React et Node.js.
+Jeu de questions-réponses en temps réel développé avec Next.js et Node.js.
 
 ## Structure du projet
 
-- `client/` : Application front-end React
+- `client/` : Application front-end Next.js
 - `server/` : Serveur Node.js avec Socket.IO
 
 ## Installation
